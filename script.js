@@ -101,50 +101,22 @@ function writePassword() {
 }
 
 function generatePassword() {
+  var password = "";
+
   // Build all the logic
   var characterCount = characterCheck();
   if (characterCount) {
-    var containsLowercase = confirm(
-      "Should the password contain lowercase characters?"
-    );
-    var containsUppercase = confirm(
-      "Should the password contain uppercase characters?"
-    );
-    var containsNumeric = confirm(
-      "Should the password contain numeric characters?"
-    );
-    var containsSpecial = confirm(
-      "Should the password contain special characters?"
-    );
-
     // build list of valid options to generated password from
-    var options = [];
-    if (containsLowercase) {
-      options = options.concat(lowercaseCharacters);
+    var options = buildOptions();
+    if (options.length != 0) {
+      // loop through number of characters expected and grab random option from criteria list
+      for (var i = 0; i < characterCount; i++) {
+        var index = Math.floor(Math.random() * options.length);
+        password = password + options[index];
+      }
     }
-
-    if (containsUppercase) {
-      options = options.concat(uppercaseCharacters);
-    }
-
-    if (containsNumeric) {
-      options = options.concat(numbers);
-    }
-
-    if (containsSpecial) {
-      options = options.concat(specialCharacters);
-    }
-
-    // loop through number of characters expected and grab random option from criteria list
-    var password = "";
-    for (var i = 0; i < characterCount; i++) {
-      var index = Math.floor(Math.random() * options.length);
-      password = password + options[index];
-    }
-    return password;
   }
-
-  return;
+  return password;
 }
 
 function characterCheck() {
@@ -161,5 +133,56 @@ function characterCheck() {
   }
   return numberCharacters;
 }
+
+function buildOptions() {
+  var containsLowercase = confirm(
+    "Should the password contain lowercase characters?"
+  );
+  var containsUppercase = confirm(
+    "Should the password contain uppercase characters?"
+  );
+  var containsNumeric = confirm(
+    "Should the password contain numeric characters?"
+  );
+  var containsSpecial = confirm(
+    "Should the password contain special characters?"
+  );
+
+  var options = [];
+
+  if (
+    containsLowercase ||
+    containsUppercase ||
+    containsNumeric ||
+    containsSpecial
+  ) {
+    // build list of valid options to generate password from
+    if (containsLowercase) {
+      options = options.concat(lowercaseCharacters);
+    }
+
+    if (containsUppercase) {
+      options = options.concat(uppercaseCharacters);
+    }
+
+    if (containsNumeric) {
+      options = options.concat(numbers);
+    }
+
+    if (containsSpecial) {
+      options = options.concat(specialCharacters);
+    }
+  } else {
+    // Allow user to try questions again or exit password generation
+    var tryAgain = confirm(
+      "Must select at least one criteria to generate password against!"
+    );
+    if (tryAgain) {
+      options = buildOptions();
+    }
+  }
+  return options;
+}
+
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
