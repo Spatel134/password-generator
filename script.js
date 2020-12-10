@@ -102,8 +102,8 @@ function writePassword() {
 
 function generatePassword() {
   // Build all the logic
-  var numberCharacters = characterCheck();
-  if (numberCharacters) {
+  var characterCount = characterCheck();
+  if (characterCount) {
     var containsLowercase = confirm(
       "Should the password contain lowercase characters?"
     );
@@ -117,6 +117,31 @@ function generatePassword() {
       "Should the password contain special characters?"
     );
 
+    // build list of valid options to generated password from
+    var options = [];
+    if (containsLowercase) {
+      options = options.concat(lowercaseCharacters);
+    }
+
+    if (containsUppercase) {
+      options = options.concat(uppercaseCharacters);
+    }
+
+    if (containsNumeric) {
+      options = options.concat(numbers);
+    }
+
+    if (containsSpecial) {
+      options = options.concat(specialCharacters);
+    }
+
+    // loop through number of characters expected and grab random option from criteria list
+    var password = "";
+    for (var i = 0; i < characterCount; i++) {
+      var index = Math.floor(Math.random() * options.length);
+      password = password + options[index];
+    }
+    return password;
   }
 
   return;
